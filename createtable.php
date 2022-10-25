@@ -1,29 +1,14 @@
-        $tableName = "ddb_demo_table_$uuid";
-        $service->createTable(
-            $tableName,
-            [
-                new DynamoDBAttribute('year', 'N', 'HASH'),
-                new DynamoDBAttribute('title', 'S', 'RANGE')
-            ]
-        );
+     >?php
+date_default_timeZone_set('Europe/London');
+ini_set('display_errors',1);
+error_reporting(-1);
 
-    public function createTable(string $tableName, array $attributes)
-    {
-        $keySchema = [];
-        $attributeDefinitions = [];
-        foreach ($attributes as $attribute) {
-            if (is_a($attribute, DynamoDBAttribute::class)) {
-                $keySchema[] = ['AttributeName' => $attribute->AttributeName, 'KeyType' => $attribute->KeyType];
-                $attributeDefinitions[] =
-                    ['AttributeName' => $attribute->AttributeName, 'AttributeType' => $attribute->AttributeType];
-            }
-        }
+require '/var/www/html/vendor/autoload.php';
+use Aws\DynamoDb\DynamoDbClient;
 
-        $this->dynamoDbClient->createTable([
-            'TableName' => $tableName,
-            'KeySchema' => $keySchema,
-            'AttributeDefinitions' => $attributeDefinitions,
-            'ProvisionedThroughput' => ['ReadCapacityUnits' => 10, 'WriteCapacityUnits' => 10],
-        ]);
-    }
-
+$client = DynamoDbClient::factory(array(
+'region' => 'eu-west-2',
+'version' => '2012-08-10'
+));
+$tableNames = array();
+$tableName='ProductCatalog';
